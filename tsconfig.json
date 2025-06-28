@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "strict": true,
+    "allowJs": false,
+    "checkJs": false,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "useDefineForClassFields": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "@antdvr/library-3.x/library-declare",
+      "pinia-plugin-persist",
+      "vitest/globals",
+      "vite/client"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.js",
+    "**/*.mjs",
+    "src/**/*.tsx",
+    "src/**/*.jsx",
+    "src/**/*.vue"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "vue.volar",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "Vue.vscode-typescript-vue-plugin"
+  ]
+}

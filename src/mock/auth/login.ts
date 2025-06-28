@@ -1,0 +1,56 @@
+import { promiser, resolver, worker, rester } from '@/mock/setup'
+import { http, HttpResponse } from 'msw'
+
+const tag = '系统登录'
+const url = resolver('/auth/login')
+
+worker.use(
+  http.post(url, async req => {
+    const body = await rester.body(req)
+    const query = await rester.query(req)
+    const params = await rester.params(req)
+    const printer = await rester.printer(tag)
+
+    let resource: any = null
+
+    if (body.username !== 'admin' || body.password !== '25d55ad283aa400af464c76d713c07ad') {
+      resource = {
+        code: '9999',
+        message: '用户名密码错误',
+        result: null
+      }
+    }
+
+    if (body.username === 'admin' && body.password === '25d55ad283aa400af464c76d713c07ad') {
+      resource = {
+        code: '0000',
+        message: null,
+        result: {
+          data: {
+            userNo: 'admin',
+            userName: 'admin',
+            mobilePhone: '182588xxx88',
+            orgId: '101.100.131',
+            orgName: '杰耘网盾平台',
+            deptName: '软件部',
+            deptId: '101.100.131.5132',
+            activity: 'Y'
+          },
+          token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxODI1ODc2NDMyMSIsImV4cCI6MTY0MjQ4NTQwNX0.gFrCkMY5OlheC7sF7elhb8cF2fvkD-dj950xklyI14Q'
+        }
+      }
+    }
+
+    printer(log => {
+      log('[body] - ', body)
+      log('[query] - ', query)
+      log('[params] - ', params)
+      log('[resource] - ', resource)
+    })
+
+    return promiser(
+      HttpResponse.json(resource),
+      0
+    )
+  })
+)
