@@ -7,7 +7,7 @@ export function addRoleInfo<T = any, D = any>(data: D) {
   return request<T, D>({
     url: '/role/addRoleInfo',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -18,7 +18,7 @@ export function getRoleInfoList<T = any, D = any>(data: D) {
   return request<T, D>({
     url: '/role/getRoleInfoList',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -29,18 +29,7 @@ export function getRoleInfoByPages<T = any, D = any>(data: D) {
   return request<T, D>({
     url: '/role/getRoleInfoByPages',
     method: 'post',
-    data: data
-  })
-}
-
-/**
- * 获取用户角色列表
- */
-export function getRoleInfoByUserNo<T = any, D = any>(data: D) {
-  return request<T, D>({
-    url: '/role/getRoleInfoByUserNo',
-    method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -51,7 +40,7 @@ export function modifyRoleInfo<T = any, D = any>(data: D) {
   return request<T, D>({
     url: '/role/modifyRoleInfo',
     method: 'post',
-    data: data
+    data: data,
   })
 }
 
@@ -62,6 +51,6 @@ export function deleteRoleInfo<T = any, D = any>(data: D) {
   return request<T, D>({
     url: '/role/deleteRoleInfo',
     method: 'post',
-    data: data
+    data: data,
   })
 }

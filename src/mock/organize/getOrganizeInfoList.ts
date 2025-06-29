@@ -28,7 +28,7 @@ worker.use(
                 orgShortName: '杰耘集团',
                 parentOrgId: '0',
                 parentOrgName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100',
@@ -38,14 +38,14 @@ worker.use(
                 orgShortName: '杰耘母公司',
                 parentOrgId: '1',
                 parentOrgName: '杰耘投资集团有限公司',
-                activity: 'Y'
-              }
+                activity: 'Y',
+              },
             ],
             pageNo: 1,
             pageSize: 20,
             totalSize: 2,
-            totalPage: 1
-          }
+            totalPage: 1,
+          },
         }
         break
       }
@@ -63,7 +63,7 @@ worker.use(
                 orgShortName: '杰耘母公司',
                 parentOrgId: '1',
                 parentOrgName: '杰耘投资集团有限公司',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131',
@@ -73,7 +73,7 @@ worker.use(
                 orgShortName: '杰耘网盾',
                 parentOrgId: '101.100',
                 parentOrgName: '杰耘投资发展有限公司',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.138',
@@ -83,14 +83,14 @@ worker.use(
                 orgShortName: '杰耘采购',
                 parentOrgId: '101.100',
                 parentOrgName: '杰耘投资发展有限公司',
-                activity: 'Y'
-              }
+                activity: 'Y',
+              },
             ],
             pageNo: 1,
             pageSize: 20,
             totalSize: 3,
-            totalPage: 1
-          }
+            totalPage: 1,
+          },
         }
         break
       }
@@ -108,7 +108,7 @@ worker.use(
                 orgShortName: '杰耘网盾',
                 parentOrgId: '101.100',
                 parentOrgName: '杰耘投资发展有限公司',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5126',
@@ -116,7 +116,7 @@ worker.use(
                 isLeaf: true,
                 title: '公司部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5127',
@@ -124,7 +124,7 @@ worker.use(
                 isLeaf: true,
                 title: '人事部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5128',
@@ -132,7 +132,7 @@ worker.use(
                 isLeaf: true,
                 title: '采购部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5129',
@@ -140,7 +140,7 @@ worker.use(
                 isLeaf: true,
                 title: '市场部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5130',
@@ -148,7 +148,7 @@ worker.use(
                 isLeaf: true,
                 title: '运维部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5131',
@@ -156,7 +156,7 @@ worker.use(
                 isLeaf: true,
                 title: '系统部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5132',
@@ -164,7 +164,7 @@ worker.use(
                 isLeaf: true,
                 title: '开发部',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5133',
@@ -172,7 +172,7 @@ worker.use(
                 isLeaf: true,
                 title: '大数据中心',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5134',
@@ -180,7 +180,7 @@ worker.use(
                 isLeaf: true,
                 title: '技术中心',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5135',
@@ -188,7 +188,7 @@ worker.use(
                 isLeaf: true,
                 title: '研发中心',
                 orgShortName: '',
-                activity: 'Y'
+                activity: 'Y',
               },
               {
                 key: '101.100.131.5136',
@@ -196,14 +196,14 @@ worker.use(
                 isLeaf: true,
                 title: '后勤中心',
                 orgShortName: '',
-                activity: 'Y'
-              }
+                activity: 'Y',
+              },
             ],
             pageNo: 1,
             pageSize: 20,
             totalSize: 13,
-            totalPage: 1
-          }
+            totalPage: 1,
+          },
         }
         break
       }
@@ -221,14 +221,14 @@ worker.use(
                 orgShortName: '杰耘采购',
                 parentOrgId: '101.100',
                 parentOrgName: '杰耘投资发展有限公司',
-                activity: 'Y'
-              }
+                activity: 'Y',
+              },
             ],
             pageNo: 1,
             pageSize: 20,
             totalSize: 1,
-            totalPage: 1
-          }
+            totalPage: 1,
+          },
         }
         break
       }
@@ -241,8 +241,8 @@ worker.use(
             pageNo: 1,
             pageSize: 20,
             totalSize: 0,
-            totalPage: 0
-          }
+            totalPage: 0,
+          },
         }
       }
     }
@@ -256,7 +256,7 @@ worker.use(
 
     return promiser(
       HttpResponse.json(resource),
-      0
+      0,
     )
-  })
+  }),
 )

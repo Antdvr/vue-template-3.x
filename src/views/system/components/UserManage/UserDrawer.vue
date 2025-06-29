@@ -2,9 +2,9 @@
   <section class="user-drawer-container">
     <ADrawer
       width="400"
-      :zIndex="1010"
+      :open="open"
       :title="title"
-      :visible="visible"
+      :zIndex="1010"
       :forceRender="false"
       :maskClosable="true"
       :destroyOnClose="true"
@@ -19,8 +19,8 @@
         :loading="loading"
       />
 
-      <div class="drawer-footer">
-        <div class="footer-fixed">
+      <div class="drawer-body-footer">
+        <div class="drawer-body-footer-fixed">
           <AButton @click="doClose()">
             取消
           </AButton>
@@ -48,19 +48,19 @@ export interface Props {
     orgTree: any[];
     deptId: any[];
     roleId: any[];
-  }
+  };
 }
 
 import UserForm from './UserForm.vue'
 
-export interface Emits{
+export interface Emits {
   (e: 'submitted'): void;
   (e: 'closed'): void;
 }
 
 defineOptions({
   name: 'UserDrawer',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const props = defineProps<Props>()
@@ -70,22 +70,23 @@ const form = ref(null as InstanceType<typeof UserForm> | null)
 const title = ref('')
 const action = ref('')
 const record = ref({} as Record<string, any>)
-const visible = ref(false)
 const readonly = ref(false)
 const disabled = ref(false)
 const loading = ref(false)
 const isAdd = ref(false)
+const open = ref(false)
 
 const doEdit = (data: any) => {
   title.value = '修改用户'
   action.value = 'update'
+  disabled.value = false
   readonly.value = false
-  visible.value = true
   isAdd.value = false
+  open.value = true
 
   record.value = Object.assign(
     { activity: 'Y' },
-    data
+    data,
   )
   nextTick(() => {
     form.value?.doCreate('update', record.value)
@@ -95,13 +96,14 @@ const doEdit = (data: any) => {
 const doAdd = (data: any) => {
   title.value = '新增用户'
   action.value = 'insert'
+  disabled.value = false
   readonly.value = false
-  visible.value = true
   isAdd.value = true
+  open.value = true
 
   record.value = Object.assign(
     { activity: 'Y' },
-    data
+    data,
   )
 
   nextTick(() => {
@@ -116,7 +118,7 @@ const doSubmit = () => {
 
       const notice = {
         error: action === 'insert' ? '新增失败!' : '更新失败!',
-        success: action === 'insert' ? '新增成功!' : '更新成功!'
+        success: action === 'insert' ? '新增成功!' : '更新成功!',
       }
 
       const promise = action === 'insert'
@@ -146,15 +148,15 @@ const doSubmit = () => {
 }
 
 const doClose = () => {
-  if (visible.value) {
+  if (open.value) {
     title.value = ''
     action.value = ''
     record.value = {}
     disabled.value = false
     readonly.value = false
     loading.value = false
-    visible.value = false
     isAdd.value = false
+    open.value = false
 
     form.value?.doClose()
     emits('closed')
@@ -163,7 +165,7 @@ const doClose = () => {
 
 defineExpose({
   doEdit,
-  doAdd
+  doAdd,
 })
 </script>
 

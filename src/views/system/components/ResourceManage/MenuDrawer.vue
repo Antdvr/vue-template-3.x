@@ -2,9 +2,9 @@
   <section class="resource-menu-drawer-container">
     <ADrawer
       width="400"
-      :zIndex="1010"
+      :open="open"
       :title="title"
-      :visible="visible"
+      :zIndex="1010"
       :forceRender="false"
       :maskClosable="true"
       :destroyOnClose="true"
@@ -32,8 +32,8 @@
         :loading="loading"
       />
 
-      <div class="drawer-footer">
-        <div class="footer-fixed">
+      <div class="drawer-body-footer">
+        <div class="drawer-body-footer-fixed">
           <AButton @click="doClose()">
             取消
           </AButton>
@@ -58,7 +58,7 @@ import * as resourceApi from '@/api/resource'
 
 import MenuForm from './MenuForm.vue'
 
-export interface Emits{
+export interface Emits {
   (e: 'submitted'): void;
   (e: 'deleted'): void;
   (e: 'closed'): void;
@@ -66,7 +66,7 @@ export interface Emits{
 
 defineOptions({
   name: 'ResourceMenuDrawer',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const emits = defineEmits<Emits>()
@@ -75,18 +75,19 @@ const form = ref(null as InstanceType<typeof MenuForm> | null)
 const title = ref('')
 const action = ref('')
 const record = ref({} as Record<string, any>)
-const visible = ref(false)
 const readonly = ref(false)
 const disabled = ref(false)
 const loading = ref(false)
 const isAdd = ref(false)
+const open = ref(false)
 
 const doEdit = (data: any) => {
   title.value = '修改菜单资源'
   action.value = 'update'
+  disabled.value = false
   readonly.value = false
-  visible.value = true
   isAdd.value = false
+  open.value = true
 
   record.value = Object.assign(
     {
@@ -94,9 +95,9 @@ const doEdit = (data: any) => {
       hideInMenu: 'N',
       hideChildInMenu: 'N',
       resourceType: 'm',
-      activity: 'Y'
+      activity: 'Y',
     },
-    data
+    data,
   )
 
   nextTick(() => {
@@ -107,9 +108,10 @@ const doEdit = (data: any) => {
 const doAdd = (data: any) => {
   title.value = '添加菜单资源'
   action.value = 'insert'
+  disabled.value = false
   readonly.value = false
-  visible.value = true
   isAdd.value = true
+  open.value = true
 
   record.value = Object.assign(
     {
@@ -117,9 +119,9 @@ const doAdd = (data: any) => {
       hideInMenu: 'N',
       hideChildInMenu: 'N',
       resourceType: 'm',
-      activity: 'Y'
+      activity: 'Y',
     },
-    data
+    data,
   )
 
   nextTick(() => {
@@ -132,14 +134,14 @@ const doDel = async(records: object[]) => {
     if (res.code !== '0000') {
       Notification.error({
         message: '系统消息',
-        description: res.message || '删除失败!'
+        description: res.message || '删除失败!',
       })
       return Promise.reject(res)
     }
 
     Notification.success({
       message: '系统消息',
-      description: '删除成功!'
+      description: '删除成功!',
     })
 
     emits('deleted')
@@ -153,7 +155,7 @@ const doSubmit = () => {
 
       const notice = {
         error: action === 'insert' ? '新增失败!' : '更新失败!',
-        success: action === 'insert' ? '新增成功!' : '更新成功!'
+        success: action === 'insert' ? '新增成功!' : '更新成功!',
       }
 
       const promise = action === 'insert'
@@ -183,15 +185,15 @@ const doSubmit = () => {
 }
 
 const doClose = () => {
-  if (visible.value) {
+  if (open.value) {
     title.value = ''
     action.value = ''
     record.value = { key: '' }
     disabled.value = false
     readonly.value = false
     loading.value = false
-    visible.value = false
     isAdd.value = false
+    open.value = false
 
     form.value?.doClose()
     emits('closed')
@@ -201,7 +203,7 @@ const doClose = () => {
 defineExpose({
   doEdit,
   doAdd,
-  doDel
+  doDel,
 })
 </script>
 
@@ -218,6 +220,7 @@ defineExpose({
       font-weight: 500;
       color: rgba(0, 0, 0, 0.85);
       text-align: right;
+      margin-right: 8px;
     }
     .value {
       font-family: PingFangSC-Regular, PingFang SC;

@@ -14,10 +14,10 @@ type AxiosAssertResult<R, T> = R extends AxiosResponseResult ? Promise<AxiosResp
 /**
  * 创建 Axios 实例
  */
-const createAxiosInstance = (config: AxiosDefaultConfig) => {
-  const axios = Axios.create(config)
-  const proxy = createAxiosInterceptor(axios)
-  return <T = any, D = any, R = AxiosResponseResult>(config: AxiosRequestConfig<D>) => proxy(config) as AxiosAssertResult<R, T>
+const createAxiosInstance = <Result = AxiosResponseResult>(config: AxiosDefaultConfig) => {
+  const proxy = <T = any, D = any, R = Result>(config: AxiosRequestConfig<D>) => axios(config) as AxiosAssertResult<R, T>
+  const axios = createAxiosInterceptor(Axios.create(config))
+  return Object.assign(proxy, axios)
 }
 
 /**
@@ -30,11 +30,7 @@ const createAxiosInterceptor = (axios: AxiosInstance) => {
       const headers = config.headers
 
       if (user.token && !headers.token && headers.token !== null) {
-        headers.token = `Bearer ${user.token}`
-      }
-
-      if (headers['x-msw-requester'] === undefined) {
-        headers['x-msw-requester'] = 'Axios'
+        headers.token = `${user.token}`
       }
 
       if (headers.token === null) {
@@ -42,12 +38,13 @@ const createAxiosInterceptor = (axios: AxiosInstance) => {
       }
 
       return config
-    }
+    },
   )
   axios.interceptors.response.use(
     response => {
-      const status = response.status
-      const config = response.config
+      const config = response.config as any
+      const status = response.status as number
+      const messager = config.messager as boolean
 
       if (status < 200 || status > 300) {
         return Promise.reject(response)
@@ -57,54 +54,58 @@ const createAxiosInterceptor = (axios: AxiosInstance) => {
         return response
       }
 
-      if (['403', '401', 403, 401].includes(response.data?.code)) {
+      if (!messager && ['403', '401', 403, 401].includes(response.data?.code)) {
+        return Promise.reject(response)
+      }
+
+      if (messager && response.data?.code !== '0000') {
         return Promise.reject(response)
       }
 
       return response.data
-    }
+    },
   )
   axios.interceptors.response.use(
     response => response,
     error => {
       let status = 500 as any
-      let message = '' as any
+      let message = null as any
       let messager = true as boolean
       const token = useUserStore().token
       const logout = useUserStore().logout
       const promise = Promise.reject(error)
 
       try {
-        status = error.status || status
-        status = error.data?.code || status
-        message = error.data?.message || null
-        messager = error.config?.messager !== false
-      } catch (e) {}
+        status = error.response?.status || error.status || status
+        status = error.response?.data?.code || error.data?.code || status
+        message = error.response?.data?.message || error.data?.message || null
+        messager = (error.response?.config?.messager ?? error.config?.messager) !== false
+      } catch {}
 
       if (error.toString().indexOf('timeout') > -1) {
-        messager && Notification.error({
+        Notification.error({
           duration: 1.5,
           message: '系统消息',
-          description: '请求超时'
+          description: '请求超时',
         })
         return promise
       }
 
       if (status === 403 || status === '403') {
-        messager && Notification.error({
+        Notification.error({
           duration: 1.5,
           message: '系统消息',
-          description: message || '暂无权限'
+          description: message || '暂无权限',
         })
 
         return promise
       }
 
       if (status === 401 || status === '401') {
-        messager && Notification.error({
+        Notification.error({
           duration: 1.5,
           message: '系统消息',
-          description: message || (token ? 'token已过期' : '暂无权限')
+          description: message || (token ? 'token已过期' : '暂无权限'),
         })
 
         if (token) {
@@ -118,21 +119,21 @@ const createAxiosInterceptor = (axios: AxiosInstance) => {
         Notification.error({
           duration: 1.5,
           message: '系统消息',
-          description: message ?? '系统异常'
+          description: message ?? '系统异常',
         })
       }
 
       return promise
-    }
+    },
   )
   return axios
 }
 
 /**
- *  Axios 实例 - request
+ * 实例 Axios - request
  */
 export const request = createAxiosInstance({
   baseURL: AppApiBase || '/',
   timeout: 30000,
-  messager: true
+  messager: true,
 })

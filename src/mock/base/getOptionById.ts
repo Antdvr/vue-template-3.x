@@ -26,8 +26,8 @@ worker.use(
             { label: '系统部', parentId: '101.100.131', value: '101.100.131.5131' },
             { label: '软件部', parentId: '101.100.131', value: '101.100.131.5132' },
             { label: '大数据中心', parentId: '101.100.131', value: '101.100.131.5133' },
-            { label: '研发中心', parentId: '101.100.131', value: '101.100.131.5135' }
-          ]
+            { label: '研发中心', parentId: '101.100.131', value: '101.100.131.5135' },
+          ],
         }
         break
       }
@@ -35,7 +35,7 @@ worker.use(
         resource = {
           code: '0000',
           message: null,
-          result: []
+          result: [],
         }
       }
     }
@@ -49,7 +49,7 @@ worker.use(
 
     return promiser(
       HttpResponse.json(resource),
-      0
+      0,
     )
-  })
+  }),
 )

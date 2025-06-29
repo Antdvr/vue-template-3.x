@@ -14,15 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import { formGroupsDefiner } from '@antdvr/library-3.x'
-import { formRulesDefiner } from '@antdvr/library-3.x'
-import { formGridDefiner } from '@antdvr/library-3.x'
-
 export interface Props {
   dictionary: {
     orgTree: any[];
     isOrg: any[];
-  },
+  };
   disabled: boolean;
   readonly: boolean;
   loading: boolean;
@@ -30,7 +26,7 @@ export interface Props {
 
 defineOptions({
   name: 'OrganizeForm',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const form = ref(null as InstanceType<SForm> | null)
@@ -44,7 +40,7 @@ const groups = formGroupsDefiner([
     type: 'AGroup',
     slot: '',
     field: 'AGroup-1',
-    label: ''
+    label: '',
   },
   {
     type: 'AInputTextarea',
@@ -54,8 +50,8 @@ const groups = formGroupsDefiner([
     props: {
       rows: 1,
       autoSize: true,
-      placeholder: '请输入名称'
-    }
+      placeholder: '请输入名称',
+    },
   },
   {
     type: 'AInput',
@@ -63,8 +59,8 @@ const groups = formGroupsDefiner([
     field: 'orgShortName',
     label: '简称',
     props: {
-      placeholder: '请输入简称'
-    }
+      placeholder: '请输入简称',
+    },
   },
   {
     type: 'ASelect',
@@ -73,8 +69,8 @@ const groups = formGroupsDefiner([
     label: '形态',
     props: {
       placeholder: '请选择组织形态',
-      options: props.dictionary.isOrg
-    }
+      options: props.dictionary.isOrg,
+    },
   },
   {
     type: 'ATreeSelect',
@@ -82,9 +78,9 @@ const groups = formGroupsDefiner([
     field: 'parentOrgId',
     label: '上级',
     props: {
-      dropdownClassName: 'text-ellipsis',
+      popupClassName: 'text-ellipsis',
       dropdownStyle: {
-        maxHeight: '300px'
+        maxHeight: '300px',
       },
       allowClear: true,
       showSearch: true,
@@ -92,12 +88,12 @@ const groups = formGroupsDefiner([
       dropdownMatchSelectWidth: true,
       treeNodeFilterProp: 'label',
       placeholder: '请选择上级',
-      treeData: props.dictionary.orgTree
+      treeData: props.dictionary.orgTree,
     },
     transfer: {
       input: value => value !== '0' ? value : '',
-      output: value => value || '0'
-    }
+      output: value => value || '0',
+    },
   },
   {
     type: 'AGroup',
@@ -105,7 +101,7 @@ const groups = formGroupsDefiner([
     field: 'AGroup-2',
     label: '',
     border: true,
-    grid: {}
+    grid: {},
   },
   {
     type: 'ASwitch',
@@ -116,20 +112,20 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
-  }
+      unCheckedChildren: '关',
+    },
+  },
 ])
 
 const rules = formRulesDefiner({
   title: [{ required: true, message: '请输入名称' }],
   isOrg: [{ required: true, message: '请选择形态' }],
-  orgShortName: [{ required: true, message: '请输入简称' }]
+  orgShortName: [{ required: true, message: '请输入简称' }],
 })
 
 const grid = formGridDefiner({
   gutter: 8,
-  xs: 24
+  xs: 24,
 })
 
 const resetFields = (...rest: any[]) => {
@@ -139,7 +135,7 @@ const resetFields = (...rest: any[]) => {
 const validateFields = (...rest: any[]) => {
   return form.value?.validateFields(...rest).then(() => ({
     action: action.value,
-    record: model.value
+    record: model.value,
   }))
 }
 
@@ -157,14 +153,14 @@ defineExpose({
   validateFields,
   resetFields,
   doCreate,
-  doClose
+  doClose,
 })
 </script>
 
 <style lang="less" scoped>
 :deep(.s-form-container) {
   .ant-form.ant-form-horizontal {
-    .ant-form-item > .ant-form-item-label {
+    .ant-form-item .ant-form-item-label {
       width: 54px;
       margin-right: 5px;
     }

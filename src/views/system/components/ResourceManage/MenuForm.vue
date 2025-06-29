@@ -21,10 +21,6 @@
 </template>
 
 <script setup lang="ts">
-import { formGroupsDefiner } from '@antdvr/library-3.x'
-import { formRulesDefiner } from '@antdvr/library-3.x'
-import { formGridDefiner } from '@antdvr/library-3.x'
-
 export interface Props {
   disabled: boolean;
   readonly: boolean;
@@ -33,7 +29,7 @@ export interface Props {
 
 defineOptions({
   name: 'ResourceMenuForm',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const form = ref(null as InstanceType<SForm> | null)
@@ -48,7 +44,7 @@ const groups = formGroupsDefiner([
     slot: '',
     field: 'AGroup-1',
     label: '',
-    grid: {}
+    grid: {},
   },
   {
     type: 'AInput',
@@ -56,8 +52,8 @@ const groups = formGroupsDefiner([
     field: 'title',
     label: '菜单名称',
     props: {
-      placeholder: '请输入菜单名称'
-    }
+      placeholder: '请输入菜单名称',
+    },
   },
   {
     type: 'AInput',
@@ -65,8 +61,8 @@ const groups = formGroupsDefiner([
     field: 'resourceName',
     label: '菜单标识',
     props: {
-      placeholder: '请输入菜单标识'
-    }
+      placeholder: '请输入菜单标识',
+    },
   },
   {
     type: 'AAutoComplete',
@@ -76,25 +72,24 @@ const groups = formGroupsDefiner([
     props: {
       showSearch: true,
       placeholder: '请输入组件名称',
-      replaceFields: { label: 'label', value: 'label' },
-      filterOption: (value: string, option: { label: string }) => {
-        return !value.trim() || option.label.startsWith(value.trim())
+      filterOption: (value: string, option: { label: string; }) => {
+        return !!option.label.startsWith(value.trim())
       },
       options: [
         {
           label: 'PageView',
-          value: 'PageView'
+          value: 'PageView',
         },
         {
           label: 'RouteView',
-          value: 'RouteView'
+          value: 'RouteView',
         },
         {
           label: 'PageFrame',
-          value: 'PageFrame'
-        }
-      ]
-    }
+          value: 'PageFrame',
+        },
+      ],
+    },
   },
   {
     type: 'AInput',
@@ -102,8 +97,8 @@ const groups = formGroupsDefiner([
     field: 'redirect',
     label: '跳转路径',
     props: {
-      placeholder: '请输入跳转路径'
-    }
+      placeholder: '请输入跳转路径',
+    },
   },
   {
     type: 'AInput',
@@ -111,8 +106,8 @@ const groups = formGroupsDefiner([
     field: 'path',
     label: '访问路径',
     props: {
-      placeholder: '请输入访问路径'
-    }
+      placeholder: '请输入访问路径',
+    },
   },
   {
     type: 'ASelect',
@@ -123,11 +118,11 @@ const groups = formGroupsDefiner([
       placeholder: '请输入菜单图标',
       allowClear: true,
       multiple: false,
-      mode: 'tags'
+      mode: 'tags',
     },
     transfer: {
-      output: (value, { helper }) => helper.isArray(value) ? value.slice(-1)[0] : value
-    }
+      output: (value, { helper }) => helper.isArray(value) ? value.slice(-1)[0] : value,
+    },
   },
   {
     type: 'AInput',
@@ -135,15 +130,15 @@ const groups = formGroupsDefiner([
     field: 'sort',
     label: '菜单排序',
     props: {
-      placeholder: '请输入菜单排序'
-    }
+      placeholder: '请输入菜单排序',
+    },
   },
   {
     type: 'AGroup',
     slot: 'AGroup-2',
     field: 'AGroup-2',
     border: true,
-    grid: {}
+    grid: {},
   },
   {
     type: 'ASwitch',
@@ -154,8 +149,8 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
+      unCheckedChildren: '关',
+    },
   },
   {
     type: 'ASwitch',
@@ -166,8 +161,8 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
+      unCheckedChildren: '关',
+    },
   },
   {
     type: 'ASwitch',
@@ -178,8 +173,8 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
+      unCheckedChildren: '关',
+    },
   },
   {
     type: 'ASwitch',
@@ -190,21 +185,21 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
-  }
+      unCheckedChildren: '关',
+    },
+  },
 ])
 
 const rules = formRulesDefiner({
   title: [{ required: true, message: '请输入菜单名称' }],
   resourceName: [{ required: true, message: '请输入菜单标识' }],
   component: [{ required: true, message: '请输入组件名称' }],
-  sort: [{ required: true, message: '请输入菜单排序' }]
+  sort: [{ required: true, message: '请输入菜单排序' }],
 })
 
 const grid = formGridDefiner({
   gutter: 8,
-  xs: 24
+  xs: 24,
 })
 
 const resetFields = (...rest: any[]) => {
@@ -214,7 +209,7 @@ const resetFields = (...rest: any[]) => {
 const validateFields = (...rest: any[]) => {
   return form.value?.validateFields(...rest).then(() => ({
     action: action.value,
-    record: model.value
+    record: model.value,
   }))
 }
 
@@ -232,14 +227,14 @@ defineExpose({
   validateFields,
   resetFields,
   doCreate,
-  doClose
+  doClose,
 })
 </script>
 
 <style lang="less" scoped>
 :deep(.s-form-container) {
   .ant-form.ant-form-horizontal {
-    .ant-form-item > .ant-form-item-label {
+    .ant-form-item .ant-form-item-label {
       width: 80px;
       margin-right: 5px;
     }

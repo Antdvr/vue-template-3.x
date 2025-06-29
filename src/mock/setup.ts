@@ -1,3 +1,6 @@
+import './axios'
+
+import { isRegExp } from 'js-simpler'
 import { toPromise } from 'js-simpler'
 import { setupWorker } from 'msw/browser'
 import { AppPageBase } from '@/configure/presetEnvironment'
@@ -9,7 +12,7 @@ export const promiser = async(value: any, delay: number = 300) => {
     .catch(() => Promise.reject(value))
 }
 
-export const resolver = (url: string, regex?: boolean) => {
+export const resolver = (url: string, regex?: RegExp | boolean) => {
   const check = /^https?:\/\//i
   const repeat = /^\/*|\/+/g
 
@@ -18,7 +21,7 @@ export const resolver = (url: string, regex?: boolean) => {
   }
 
   if (url && regex) {
-    const format = /[-/\\^$*+?.()|[\]{}]/g
+    const format = isRegExp(regex) ? regex : /[-/\\^$*+?.()|[\]{}]/g
     const source = (url.split('?')[0]).replace(format, '\\$&')
     return new RegExp(source + '(\\?.*)?$')
   }
@@ -43,7 +46,7 @@ export const replacer = (url: string) => {
   return url
 }
 
-export const request = () => {
+export const parser = () => {
   const printer = async(tag: string) => {
     const log = console.log
     const group = console.group
@@ -78,7 +81,7 @@ export const request = () => {
     printer,
     params,
     query,
-    body
+    body,
   }
 }
 
@@ -88,11 +91,11 @@ export const runner = () => {
   worker.start({
     serviceWorker: { url: `${replacer(AppPageBase)}/msw.js` },
     onUnhandledRequest: 'bypass',
-    quiet: true
+    quiet: true,
   })
 
   return worker
 }
 
-export const rester = request()
+export const rester = parser()
 export const worker = runner()

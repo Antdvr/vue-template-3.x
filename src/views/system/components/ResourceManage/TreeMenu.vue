@@ -11,7 +11,7 @@
         ref="tree"
         :loading="loading"
         :treeData="menuTree"
-        :replaceFields="replaceFields"
+        :fieldNames="fieldNames"
         :allowCheckedLevel="2"
         :allowSelectedLevel="2"
         :selectable="true"
@@ -136,10 +136,9 @@
 </template>
 
 <script setup lang="ts">
-import { treeEmitSelectDefiner } from '@antdvr/library-3.x'
 import { CSSProperties } from 'vue'
-
 import * as resourceApi from '@/api/resource'
+
 import Message from 'ant-design-vue/es/message'
 import AModal from 'ant-design-vue/es/modal'
 import MenuDrawer from './MenuDrawer.vue'
@@ -150,29 +149,29 @@ export interface Emits {
 
 defineOptions({
   name: 'ResourceTreeMenu',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const cardHeadStyle: CSSProperties = {
   flex: '0 0 auto',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }
 
 const cardBodyStyle: CSSProperties = {
   flex: '1 1 auto',
   overflow: 'hidden',
-  position: 'relative'
+  position: 'relative',
 }
 
-const replaceFields: Ref<STreeFieldNames> = ref({
+const fieldNames: Ref<STreeFieldNames> = ref({
   key: 'resourceId',
   title: 'title',
-  children: 'children'
+  children: 'children',
 })
 
 const emits = defineEmits<Emits>()
-const tree = ref(null as InstanceType<STree>| null)
-const menuDrawer = ref(null as InstanceType<typeof MenuDrawer>| null)
+const tree = ref(null as InstanceType<STree> | null)
+const menuDrawer = ref(null as InstanceType<typeof MenuDrawer> | null)
 const menuTree = ref([] as Record<string, any>[])
 const loading = ref(false)
 
@@ -226,7 +225,7 @@ const doDrawerDel = (record: Record<string, any>) => {
     cancelText: '取消',
     okText: '删除',
     okType: 'danger',
-    onOk: () => { menuDrawer.value?.doDel([record]) }
+    onOk: () => { menuDrawer.value?.doDel([record]) },
   })
 }
 

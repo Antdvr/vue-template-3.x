@@ -36,7 +36,7 @@
         v-model:treeData="treeData"
         v-model:expandedKeys="expandedKeys"
         v-model:selectedKeys="selectedKeys"
-        :replaceFields="replaceFields"
+        :fieldNames="fieldNames"
         :allowAutoExpandLoad="true"
         :allowAutoExpanded="true"
         :allowSelectedLevel="1"
@@ -57,10 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import { treeEmitChangeDefiner } from '@antdvr/library-3.x'
-import { treeEmitSelectDefiner } from '@antdvr/library-3.x'
-import { treeLoadDataDefiner } from '@antdvr/library-3.x'
-
 import { CSSProperties } from 'vue'
 import { requestBuilder } from '@/utils/common'
 import * as organizeApi from '@/api/organize'
@@ -73,7 +69,7 @@ export interface Emits {
 
 defineOptions({
   name: 'OrganizeTree',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const cardStyle: CSSProperties = {
@@ -82,7 +78,7 @@ const cardStyle: CSSProperties = {
   flex: '1 1 auto',
   width: '100%',
   height: '100%',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }
 
 const bodyStyle: CSSProperties = {
@@ -91,12 +87,12 @@ const bodyStyle: CSSProperties = {
   flexFlow: 'column nowrap',
   flex: '1 1 auto',
   position: 'relative',
-  overflow: 'auto'
+  overflow: 'auto',
 }
 
 const headStyle: CSSProperties = {
   flex: '0 0 auto',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }
 
 const emits = defineEmits<Emits>()
@@ -106,7 +102,7 @@ const loading = ref(false as boolean)
 const loadedKeys = ref([] as STreeKeys)
 const selectedKeys = ref([] as STreeKeys)
 const expandedKeys = ref([] as STreeKeys)
-const replaceFields = ref({ children: 'children', title: 'title', key: 'key' })
+const fieldNames = ref({ children: 'children', title: 'title', key: 'key' })
 
 const doRefresh = (_options?: Record<string, any>) => {
   if (!loading.value) {
@@ -122,11 +118,14 @@ const doRefresh = (_options?: Record<string, any>) => {
     selectedKeys.value = []
 
     for (const key of loadingKeys) {
-      promises.push(
-        doQuery({ key })
-          .then(result => ({ parent: key !== '0' ? { key } : null, children: result || [] }))
-          .catch(() => {})
-      )
+      const promise = Promise.resolve(doQuery({ key })).then(result => {
+        return {
+          parent: key !== '0' ? { key } : null,
+          children: result || [],
+        }
+      })
+
+      promises.push(promise.catch(() => {}))
     }
 
     return Promise.all(promises)
@@ -151,7 +150,7 @@ const doLinkage = treeEmitSelectDefiner(options => {
 
   emits('queryTable', {
     orgId: options.selectedNode?.isOrg === 'Y' ? options.selectedNode.key : '',
-    deptId: options.selectedNode?.isOrg === 'N' ? options.selectedNode.key : ''
+    deptId: options.selectedNode?.isOrg === 'N' ? options.selectedNode.key : '',
   })
 })
 
@@ -164,7 +163,7 @@ const doQuery = treeLoadDataDefiner(options => {
     '',
     { orgId: options.key },
     null,
-    null
+    null,
   )
 
   return organizeApi.getOrganizeInfoTree(params).then(res => {
@@ -184,7 +183,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  doRefresh
+  doRefresh,
 })
 </script>
 

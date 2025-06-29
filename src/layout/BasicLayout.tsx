@@ -1,8 +1,7 @@
 import { KeepAlive } from 'vue'
 import { RouterView } from 'vue-router'
-import { SIcon, isIconType } from '@antdvr/library-3.x'
+import { SProLayout, SProGlobalHeader, proClearMenuItem } from '@antdvr/library-3.x'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue'
-import AProLayout, { clearMenuItem, GlobalHeader } from '@ant-design-vue/pro-layout'
 import defaultSettings from '@/configure/defaultSettings'
 import useAppStore from '@/store/app'
 import useTagStore from '@/store/tag'
@@ -22,13 +21,11 @@ export default defineComponent({
     const appStore = useAppStore()
     const tagStore = useTagStore()
 
+    const splitMenus = ref(true)
     const siderWidth = ref(192)
     const headerHeight = ref(48)
     const collapsedWidth = ref(48)
     const refLayoutHeader = ref(null as HTMLElement | null)
-
-    const splitMenus: Ref<boolean> = ref(true)
-    const collapsedButtonRender: Ref<false> = ref(false)
 
     const intersectionObserver = new window.IntersectionObserver(entries => {
       if (entries[0].intersectionRatio <= 0.5) {
@@ -38,35 +35,19 @@ export default defineComponent({
 
     const contentStyle = computed(() => {
       return {
-        overflow: (appStore.isMixMenu && (appStore.hideMixHeaderTab || !appStore.fixedHeaderTab)) || (!appStore.isMixMenu && appStore.fixedHeader && !appStore.fixedHeaderTab) ? 'auto' : 'visible'
+        overflow: (appStore.isMixMenu && (appStore.hideMixHeaderTab || !appStore.fixedHeaderTab)) || (!appStore.isMixMenu && appStore.fixedHeader && !appStore.fixedHeaderTab) ? 'auto' : 'visible',
       }
     })
 
     const menuData = computed(() => {
       const dynamicRoutes = router.getRoutes()
       const menuDataRoutes = dynamicRoutes.find(route => route.path === '/')?.children || []
-
-      const lazyMenuIcon = (routes: any[]): any[] => {
-        if (Array.isArray(routes)) {
-          return routes.map(route => ({
-            id: route.id,
-            path: route.path,
-            name: route.name,
-            meta: {
-              icon: isIconType(route.meta?.icon) ? <SIcon type={route.meta.icon}/> : route.meta?.icon || '',
-              title: route.meta?.title || ''
-            },
-            children: lazyMenuIcon(route.children)
-          }))
-        }
-        return []
-      }
-
-      return lazyMenuIcon(clearMenuItem(menuDataRoutes))
+      return proClearMenuItem(menuDataRoutes)
     })
 
     const isAllowOpenKey = ref(!appStore.collapsed && !appStore.isTopMenu || appStore.isMobile)
     const selectedKeys = ref(route.matched.map(route => route.path).filter(path => path !== '/'))
+    const routeKeys = ref(route.matched.map(route => route.path).filter(path => path !== '/'))
     const openKeys = ref(route.matched.map(route => route.path).filter(path => path !== '/' && isAllowOpenKey.value))
 
     const findKeys = (key: string, routes: any[]) => {
@@ -86,28 +67,48 @@ export default defineComponent({
     const headerRender = (props: any, dom: any) => {
       appStore.toggleMobile(props.isMobile)
 
-      if (props.isMobile || appStore.isSideMenu) {
+      if (props.isMobile || appStore.isSideMenu || appStore.isMixMenu) {
+        const darkTheme = computed(() => {
+          return (
+            (!appStore.isMobile && appStore.themeMode !== 'light' && appStore.layoutMode !== 'side') ||
+            (appStore.isMobile && (appStore.themeMode === 'dark' && appStore.layoutMode === 'mix')) ||
+            (appStore.themeMode === 'realDark')
+          )
+        })
+
+        const h1Style: any = {
+          margin: '0 0',
+          padding: '0 15px',
+          fontSize: '24px',
+          color: darkTheme.value ? '#ffffff' : 'var(--ant-primary-color)',
+          cursor: 'pointer',
+        }
+
         return (
-          <GlobalHeader {...props}>
+          <SProGlobalHeader
+            {...props}
+            iconPrefix={appStore.iconPrefix}
+            iconfontUrl={appStore.iconfontUrl}
+          >
             <div
-              ref={refLayoutHeader}
-              style='display: flex; flex: 1 1 auto; alignItems: center; height: 48px; lineHeight: 48px;'
+              ref={refLayoutHeader as any}
+              style="display: flex; flex: 1 1 auto; align-items: center; height: 48px; lineHeight: 48px;"
             >
               <h1
-                style='fontSize: 24px; margin: 0 0; padding: 0 15px; color: var(--ant-primary-color); cursor: pointer;'
-                onClick={ () => { appStore.toggleCollapsed(!appStore.collapsed) }}
+                style={h1Style}
+                onClick={() => appStore.toggleCollapsed(!appStore.collapsed)}
               >
-                { props.collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/> }
+                { props.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined /> }
               </h1>
             </div>
-          </GlobalHeader>
+          </SProGlobalHeader>
         )
       }
 
       return dom
     }
 
-    const rightContentRender = (props: any) => {
+    const rightContentRender = (_: any) => {
       return (
         <LayoutAvatar
           isTopMenu={appStore.isTopMenu}
@@ -117,7 +118,7 @@ export default defineComponent({
       )
     }
 
-    const menuHeaderRender = (props: any) => {
+    const menuHeaderRender = (_: any) => {
       return (
         <LayoutLogo
           full={false}
@@ -132,30 +133,16 @@ export default defineComponent({
     }
 
     const menuExtraRender = (props: any) => {
-      if (props.layout === 'mix' && props.isMobile) {
-        return (
-          <LayoutLogo
-            full={false}
-            title={defaultSettings.domTitle}
-            layoutMode={appStore.layoutMode}
-            collapsed={appStore.collapsed}
-            themeMode={appStore.themeMode}
-            isSideMenu={appStore.isSideMenu}
-            isMobile={appStore.isMobile}
-          />
-        )
-      }
-
       if (props.layout === 'mix' && !props.isMobile) {
-        return <div style='width: 100%; height: 5px'/>
+        return <div style="width: 100%; height: 5px" />
       }
     }
 
-    const onHeaderHide = (props: any) => {
+    const onHeaderHide = (_: any) => {
       appStore.toggleCollapsed(true)
     }
 
-    const onCollapse = (props: any) => {
+    const onCollapse = (_: any) => {
       if (appStore.isMobile) {
         appStore.toggleCollapsed(true)
       }
@@ -165,7 +152,8 @@ export default defineComponent({
       if (keys.length > 0) {
         const key = keys.pop()
         const routes = unref(menuData)
-        selectedKeys.value = findKeys(key, routes) || keys
+        const lastKey = routeKeys.value[routeKeys.value.length - 1]
+        selectedKeys.value = (routeKeys.value.includes(key) ? findKeys(lastKey, routes) : findKeys(key, routes)) || keys
       }
     }
 
@@ -178,6 +166,7 @@ export default defineComponent({
     watch(route, () => {
       isAllowOpenKey.value = !appStore.collapsed && !appStore.isTopMenu || appStore.isMobile
       selectedKeys.value = route.matched.map(route => route.path).filter(path => path !== '/')
+      routeKeys.value = route.matched.map(route => route.path).filter(path => path !== '/')
       openKeys.value = route.matched.map(route => route.path).filter(path => path !== '/' && isAllowOpenKey.value)
     })
 
@@ -192,10 +181,11 @@ export default defineComponent({
     })
 
     return () => (
-      <AProLayout
+      <SProLayout
         theme={appStore.themeMode}
         layout={appStore.layoutMode}
-        navTheme={appStore.themeMode}
+        iconPrefix={appStore.iconPrefix}
+        iconfontUrl={appStore.iconfontUrl}
         fixedHeader={appStore.fixedHeader}
         fixSiderbar={appStore.fixedSidebar}
         contentWidth={appStore.contentWidth}
@@ -208,7 +198,6 @@ export default defineComponent({
         headerHeight={headerHeight.value}
         contentStyle={contentStyle.value}
         collapsedWidth={collapsedWidth.value}
-        collapsedButtonRender={collapsedButtonRender.value}
 
         v-models={[[selectedKeys.value, 'selectedKeys'], [openKeys.value, 'openKeys']]}
         v-slots={{ headerRender, menuHeaderRender, menuExtraRender, rightContentRender }}
@@ -217,7 +206,7 @@ export default defineComponent({
         onSelect={onSelect}
       >
         <div
-          class='page-router-view-navigate'
+          class="page-router-view-navigate"
           style={{ position: 'sticky', left: 0 }}
         >
           <LayoutMultiTab
@@ -234,18 +223,18 @@ export default defineComponent({
         </div>
 
         <div
-          class='page-router-view-container'
+          class="page-router-view-container"
           style={{
             width: '100%',
             maxWidth: appStore.isTopMenu && appStore.isFixed ? '1200px' : 'none',
-            height: (appStore.isMixMenu && !appStore.hideMixHeaderTab && appStore.fixedHeaderTab) || (!appStore.isMixMenu && appStore.fixedHeader && appStore.fixedHeaderTab) ? 'calc(100vh - 88px)' : 'auto',
+            height: (appStore.isMixMenu && !appStore.hideMixHeaderTab && appStore.fixedHeaderTab) || (!appStore.isMixMenu && appStore.fixedHeader && appStore.fixedHeaderTab) ? 'calc(100vh - 89px)' : 'auto',
             overflow: (appStore.isMixMenu && !appStore.hideMixHeaderTab && appStore.fixedHeaderTab) || (!appStore.isMixMenu && appStore.fixedHeader && appStore.fixedHeaderTab) ? 'auto' : 'visible',
             position: appStore.isMixMenu || appStore.fixedHeader ? 'absolute' : 'relative',
             margin: '0px auto',
             padding: '0px 0px',
             zIndex: 1,
             right: 0,
-            left: 0
+            left: 0,
           }}
         >
           <RouterView
@@ -254,15 +243,15 @@ export default defineComponent({
                 <KeepAlive include={appStore.multiTab && appStore.keepAlive ? tagStore.cacheTags : []}>
                   { scope.Component ? <scope.Component /> : null }
                 </KeepAlive>
-              )
+              ),
             }}
           />
         </div>
 
-        <div class='page-router-view-settings'>
-          <LayoutSettingDrawer/>
+        <div class="page-router-view-settings">
+          <LayoutSettingDrawer />
         </div>
-      </AProLayout>
+      </SProLayout>
     )
-  }
+  },
 })

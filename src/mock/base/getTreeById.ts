@@ -35,19 +35,19 @@ worker.use(
                       label: '杰耘网盾平台',
                       shortName: '杰耘网盾',
                       value: '101.100.131',
-                      valueParent: '101.100'
+                      valueParent: '101.100',
                     },
                     {
                       label: '杰耘采购平台',
                       shortName: '杰耘采购',
                       value: '101.100.138',
-                      valueParent: '101.100'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+                      valueParent: '101.100',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         }
         break
       }
@@ -55,7 +55,7 @@ worker.use(
         resource = {
           code: '0000',
           message: null,
-          result: []
+          result: [],
         }
       }
     }
@@ -69,7 +69,7 @@ worker.use(
 
     return promiser(
       HttpResponse.json(resource),
-      0
+      0,
     )
-  })
+  }),
 )

@@ -1,4 +1,8 @@
 import * as authApi from '@/api/auth'
+
+import PageView from '@/layout/PageView'
+import PageFrame from '@/layout/PageFrame'
+import RouteView from '@/layout/RouteView'
 import defaultRouter from '@/configure/defaultRouter'
 
 import type { GenerateDynamicComponent } from './generate-typing'
@@ -48,11 +52,24 @@ const treeToRoute: TreeToRoute = (trees, parent = {}, components = {}) => {
       target,
       allowCache,
       hideInMenu,
-      hideChildInMenu
+      hideChildInMenu,
     } = item.meta || {}
+
+    if (item.component === PageView) {
+      item.component = 'PageView'
+    }
+
+    if (item.component === PageFrame) {
+      item.component = 'PageFrame'
+    }
+
+    if (item.component === RouteView) {
+      item.component = 'RouteView'
+    }
 
     const parentAllowCache = parent.meta?.allowCache
     const isFrameView = item.component === 'PageFrame'
+    const isNoTarget = ['PageView', 'RouteView'].includes(item.component)
     const match = item.component === 'PageFrame' ? 'external' : 'path'
 
     const currentRouter: ReqiredRoute = {
@@ -66,15 +83,15 @@ const treeToRoute: TreeToRoute = (trees, parent = {}, components = {}) => {
         icon: icon,
         title: title,
         match: match,
-        target: target,
+        target: target ?? (isNoTarget ? '_none' : 'RouterLink'),
         groupId: (parent.meta || {}).groupId || item.id,
         external: isFrameView && item.path || '',
         componentName: item.component || item.name || '',
         hideChildInMenu: hideInMenu === true || hideInMenu === 'Y' || hideChildInMenu === true || hideChildInMenu === 'Y',
         allowCache: (parentAllowCache !== false && parentAllowCache !== 'N') || (allowCache !== false && allowCache !== 'N'),
         hideInMenu: hideInMenu === true || hideInMenu === 'Y',
-        permission: item.name && [item.name] || []
-      }
+        permission: item.name && [item.name] || [],
+      },
     }
 
     // 无效图标
@@ -102,7 +119,7 @@ const treeToRoute: TreeToRoute = (trees, parent = {}, components = {}) => {
       currentRouter.children = treeToRoute(
         item.children,
         currentRouter,
-        components
+        components,
       )
     }
 
@@ -123,14 +140,33 @@ export const generateDynamicFullpath: GenerateDynamicFullpath = (parent = {}, it
   const one = /\/+$/
   const two = /^\/*/
   const keep = /(.+?)\/*$/
+  const check = /^https?:\/\/.+|^\/.+/i
   const namePath = item.name?.replace(one, '') ?? ''
   const itemPath = item.path?.replace(keep, '$1') ?? ''
   const parentPath = parent.path?.replace(one, '') ?? ''
-  const isUseMergePath = item.component === 'PageFrame' || !(/^\//).test(itemPath)
+  const isPageFrame = item.component === 'PageFrame'
 
-  return isUseMergePath && !!namePath
-    ? (parentPath + '/' + namePath).replace(two, '/')
-    : (itemPath || '')
+  if (!isPageFrame && check.test(itemPath)) {
+    return itemPath
+  }
+
+  if (!isPageFrame && !itemPath) {
+    return (parentPath + '/' + namePath).replace(two, '/')
+  }
+
+  if (!isPageFrame && itemPath) {
+    return (parentPath + '/' + itemPath).replace(two, '/')
+  }
+
+  if (isPageFrame && !namePath) {
+    return itemPath
+  }
+
+  if (isPageFrame && namePath) {
+    return (parentPath + '/' + namePath).replace(two, '/')
+  }
+
+  return ''
 }
 
 /**
@@ -146,22 +182,22 @@ export const generateDynamicComponent: GenerateDynamicComponent = (parent = {}, 
   const currentPath = tempViewPath.replace(/^\/*([^/].*)/, '/$1')
   const importrMaps = import.meta.glob('@/views/**/*.vue')
 
-  // Component
+  // Component Finder
   if (String(item.component) !== item.component) {
     return item.component
   }
 
-  // Layout
+  // Layout Finder
   if (components[item.component]) {
     return components[item.component]
   }
 
-  // Views
+  // Views Finder
   if (components[currentPath]) {
     return components[currentPath]
   }
 
-  // Matching
+  // Auto Finder
   const viewSuffix = '.vue'
   const viewPrefix = `/src/views`
   const viewPartPath = currentPath.replace(/^\/+|\.vue$/gi, '')
@@ -186,7 +222,7 @@ export const generateDynamicRouter: GenerateDynamicRouter = (params, components,
     const rootRoute = defaultRouter.rootRoute
     const externalRoute = defaultRouter.externalRoute
     const notFoundRoutes = defaultRouter.notFoundRoutes
-    const children = JSON.parse(JSON.stringify(rootRoute.children)) as Menu[]
+    const children = Array.from(rootRoute.children) as Menu[]
 
     // 生成树型数组
     listToTree(result, children, { id: '0' })
@@ -255,5 +291,5 @@ export type {
   GenerateDynamicFullpath,
   GenerateDynamicRouter,
   GenerateLayoutRouter,
-  GenerateViewsRouter
+  GenerateViewsRouter,
 }

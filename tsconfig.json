@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "strict": true,
     "allowJs": false,
@@ -26,9 +26,7 @@
       "dom"
     ],
     "types": [
-      "@antdvr/library-3.x/library-declare",
-      "pinia-plugin-persist",
-      "vitest/globals",
+      "@antdvr/library-3.x/globals",
       "vite/client"
     ]
   },
@@ -40,9 +38,8 @@
     "src/**/*.jsx",
     "src/**/*.vue"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
+  "exclude": [
+    "node_modules",
+    "test"
   ]
 }

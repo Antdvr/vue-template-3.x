@@ -14,17 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { formGroupsDefiner } from '@antdvr/library-3.x'
-import { formRulesDefiner } from '@antdvr/library-3.x'
-import { formGridDefiner } from '@antdvr/library-3.x'
-import { formValidator } from '@antdvr/library-3.x'
-
 export interface Props {
   presetOptions: {
     orgTree: any[];
     deptId: any[];
     roleId: any[];
-  }
+  };
   disabled: boolean;
   readonly: boolean;
   loading: boolean;
@@ -32,7 +27,7 @@ export interface Props {
 
 defineOptions({
   name: 'UserForm',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const form = ref(null as InstanceType<SForm> | null)
@@ -46,7 +41,7 @@ const groups = formGroupsDefiner([
     type: 'AGroup',
     slot: '',
     field: 'AGroup-1',
-    label: ''
+    label: '',
   },
   {
     type: 'AInputTextarea',
@@ -56,8 +51,8 @@ const groups = formGroupsDefiner([
     props: {
       rows: 1,
       autoSize: true,
-      placeholder: '请输入用户名'
-    }
+      placeholder: '请输入用户名',
+    },
   },
   {
     type: 'AInputPassword',
@@ -65,8 +60,8 @@ const groups = formGroupsDefiner([
     field: 'password',
     label: '用户密码',
     props: {
-      placeholder: '请输入用户密码'
-    }
+      placeholder: '请输入用户密码',
+    },
   },
   {
     type: 'AInput',
@@ -74,8 +69,8 @@ const groups = formGroupsDefiner([
     field: 'userName',
     label: '用户姓名',
     props: {
-      placeholder: '请输入用户姓名'
-    }
+      placeholder: '请输入用户姓名',
+    },
   },
   {
     type: 'AInput',
@@ -83,8 +78,8 @@ const groups = formGroupsDefiner([
     field: 'mobilePhone',
     label: '手机号码',
     props: {
-      placeholder: '请输入手机号码'
-    }
+      placeholder: '请输入手机号码',
+    },
   },
   {
     type: 'AInput',
@@ -92,8 +87,8 @@ const groups = formGroupsDefiner([
     field: 'idCard',
     label: '身份证号',
     props: {
-      placeholder: '请输入身份证号'
-    }
+      placeholder: '请输入身份证号',
+    },
   },
   {
     type: 'ATreeSelect',
@@ -101,9 +96,9 @@ const groups = formGroupsDefiner([
     field: 'orgId',
     label: '所属组织',
     props: {
-      dropdownClassName: 'text-ellipsis',
+      popupClassName: 'text-ellipsis',
       dropdownStyle: {
-        maxHeight: '300px'
+        maxHeight: '300px',
       },
       allowClear: true,
       showSearch: true,
@@ -111,8 +106,8 @@ const groups = formGroupsDefiner([
       dropdownMatchSelectWidth: true,
       treeNodeFilterProp: 'label',
       placeholder: '请选择所属组织',
-      treeData: props.presetOptions.orgTree
-    }
+      treeData: props.presetOptions.orgTree,
+    },
   },
   {
     type: 'ASelect',
@@ -122,8 +117,8 @@ const groups = formGroupsDefiner([
     props: {
       allowClear: true,
       placeholder: '请选择所属部门',
-      options: props.presetOptions.deptId
-    }
+      options: props.presetOptions.deptId,
+    },
   },
   {
     type: 'ASelect',
@@ -135,15 +130,15 @@ const groups = formGroupsDefiner([
       placeholder: '请选择所属角色',
       allowClear: true,
       fieldNames: { label: 'roleName', value: 'roleId' },
-      options: props.presetOptions.roleId
-    }
+      options: props.presetOptions.roleId,
+    },
   },
   {
     type: 'AGroup',
     slot: 'AGroup-2',
     field: 'AGroup-2',
     label: '状态信息',
-    border: true
+    border: true,
   },
   {
     type: 'ASwitch',
@@ -154,9 +149,9 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
-  }
+      unCheckedChildren: '关',
+    },
+  },
 ])
 
 const rules = formRulesDefiner({
@@ -165,18 +160,18 @@ const rules = formRulesDefiner({
     message: '请输入用户密码',
     validator: '用户密码过短',
     pattern: /.{6,}/,
-    required: true
+    required: true,
   }),
   userName: [{ required: true, message: '请输入用户姓名' }],
   mobilePhone: [{ required: true, message: '请输入手机号码' }],
   idCard: [{ required: true, message: '请输入身份证号' }],
   orgId: [{ required: true, message: '请选择所属组织' }],
-  roleId: [{ required: true, message: '请选择所属角色' }]
+  roleId: [{ required: true, message: '请选择所属角色' }],
 })
 
 const grid = formGridDefiner({
   gutter: 8,
-  xs: 24
+  xs: 24,
 })
 
 const resetFields = (...rest: any[]) => {
@@ -186,7 +181,7 @@ const resetFields = (...rest: any[]) => {
 const validateFields = (...rest: any[]) => {
   return form.value?.validateFields(...rest).then(() => ({
     action: action.value,
-    record: model.value
+    record: model.value,
   }))
 }
 
@@ -204,14 +199,14 @@ defineExpose({
   validateFields,
   resetFields,
   doCreate,
-  doClose
+  doClose,
 })
 </script>
 
 <style lang="less" scoped>
 :deep(.s-form-container) {
   .ant-form.ant-form-horizontal {
-    .ant-form-item > .ant-form-item-label {
+    .ant-form-item .ant-form-item-label {
       width: 80px;
       margin-right: 5px;
     }

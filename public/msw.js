@@ -5,25 +5,24 @@
  * Mock Service Worker.
  * @see https://github.com/mswjs/msw
  * - Please do NOT modify this file.
- * - Please do NOT serve this file on production.
  */
 
-const PACKAGE_VERSION = '2.2.13'
-const INTEGRITY_CHECKSUM = '26357c79639bfa20d64c0efca2a87423'
+const PACKAGE_VERSION = '2.10.2'
+const INTEGRITY_CHECKSUM = 'f5825c521429caf22a4dd13b66e243af'
 const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
 const activeClientIds = new Set()
 
 
-self.addEventListener('install', function () {
+addEventListener('install', function () {
   self.skipWaiting()
 })
 
-self.addEventListener('activate', function (event) {
+addEventListener('activate', function (event) {
   event.waitUntil(self.clients.claim())
 })
 
-self.addEventListener('message', async function (event) {
-  const clientId = event.source.id
+addEventListener('message', async function (event) {
+  const clientId = Reflect.get(event.source || {}, 'id')
 
   if (!clientId || !self.clients) {
     return
@@ -63,7 +62,12 @@ self.addEventListener('message', async function (event) {
 
       sendToClient(client, {
         type: 'MOCKING_ENABLED',
-        payload: true,
+        payload: {
+          client: {
+            id: client.id,
+            frameType: client.frameType,
+          },
+        },
       })
       break
     }
@@ -89,11 +93,12 @@ self.addEventListener('message', async function (event) {
   }
 })
 
-self.addEventListener('fetch', async function (event) {
+addEventListener('fetch', async function (event) {
   const request = event.request
   const clientId = event.clientId
-  const requestId = crypto.randomUUID()
+  const _request = request.clone()
   const requester = request.headers.get('x-msw-requester')
+  const requestId = crypto.randomUUID()
 
   if (!requester) {
     return
@@ -108,19 +113,40 @@ self.addEventListener('fetch', async function (event) {
   }
 
   const passthrough = async () => {
-    const requestClone = request.clone()
-    const headers = Object.fromEntries(requestClone.headers.entries())
-    const request = fetch(requestClone, { headers })
+    const headers = new Headers(_request.headers)
+    const xMswHeader = headers.get('x-msw-requester')
+    const acceptHeader = headers.get('accept')
 
-    delete headers['x-msw-requester']
-    delete headers['x-msw-intention']
+    if (xMswHeader) {
+      const values = xMswHeader.split(',').map((value) => value.trim())
+      const filters = values.filter((value) => value !== 'Axios')
+     
+      filters.length > 0
+        ? headers.set('x-msw-requester', filters.join(', '))
+        : headers.delete('x-msw-requester')
+    }
 
-    return request
+    if (acceptHeader) {
+      const values = acceptHeader.split(',').map((value) => value.trim())
+      const filters = values.filter((value) => value !== 'msw/passthrough')
+     
+      filters.length > 0
+        ? headers.set('accept', filters.join(', '))
+        : headers.delete('accept')
+    }
+
+    return fetch(_request, { 
+      headers 
+    })
   }
 
   const responser = async () => {
     if (!activeClientIds.has(clientId)) {
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      await new Promise((resolve) => setTimeout(resolve, 180))
+    }
+
+    if (!activeClientIds.has(clientId)) {
+      await new Promise((resolve) => setTimeout(resolve, 100))
     }
 
     if (activeClientIds.has(clientId)) {
@@ -134,8 +160,13 @@ self.addEventListener('fetch', async function (event) {
 })
 
 
+
 async function resolveMainClient(event) {
   const client = await self.clients.get(event.clientId)
+
+  if (activeClientIds.has(event.clientId)) {
+    return client
+  }
 
   if (client?.frameType === 'top-level') {
     return client
@@ -155,26 +186,32 @@ async function handleRequest(event, requestId) {
   const response = await getResponse(event, client, requestId)
 
   if (client && activeClientIds.has(client.id)) {
-    ;(async function () {
-      const responseClone = response.clone()
+    const request = event.request
+    const requestClone = request.clone()
+    const responseClone = response.clone()
+    const serializedRequest = await serializeRequest(requestClone)
 
-      sendToClient(
-        client,
-        {
-          type: 'RESPONSE',
-          payload: {
-            requestId,
-            isMockedResponse: IS_MOCKED_RESPONSE in response,
+    sendToClient(
+      client,
+      {
+        type: 'RESPONSE',
+        payload: {
+          isMockedResponse: IS_MOCKED_RESPONSE in response,
+          request: {
+            id: requestId,
+            ...serializedRequest,
+          },
+          response: {
             type: responseClone.type,
             status: responseClone.status,
             statusText: responseClone.statusText,
-            body: responseClone.body,
             headers: Object.fromEntries(responseClone.headers.entries()),
+            body: responseClone.body,
           },
         },
-        [responseClone.body],
-      )
-    })()
+      },
+      responseClone.body ? [serializedRequest.body, responseClone.body] : [],
+    )
   }
 
   return response
@@ -202,29 +239,17 @@ async function getResponse(event, client, requestId) {
     return passthrough()
   }
 
-  const requestBuffer = await request.arrayBuffer()
+  const serializedRequest = await serializeRequest(request.clone())
   const clientMessage = await sendToClient(
     client,
     {
       type: 'REQUEST',
       payload: {
         id: requestId,
-        url: request.url,
-        mode: request.mode,
-        method: request.method,
-        headers: Object.fromEntries(request.headers.entries()),
-        cache: request.cache,
-        credentials: request.credentials,
-        destination: request.destination,
-        integrity: request.integrity,
-        redirect: request.redirect,
-        referrer: request.referrer,
-        referrerPolicy: request.referrerPolicy,
-        body: requestBuffer,
-        keepalive: request.keepalive,
+        ...serializedRequest,
       },
     },
-    [requestBuffer],
+    [serializedRequest.body],
   )
 
   switch (clientMessage.type) {
@@ -243,7 +268,6 @@ async function getResponse(event, client, requestId) {
 async function sendToClient(client, message, transferrables = []) {
   return new Promise((resolve, reject) => {
     const channel = new MessageChannel()
-    const transfers = [channel.port2].concat(transferrables.filter(Boolean))
 
     channel.port1.onmessage = (event) => {
       if (event.data && event.data.error) {
@@ -253,11 +277,32 @@ async function sendToClient(client, message, transferrables = []) {
       resolve(event.data)
     }
 
-    client.postMessage(message, transfers)
+    client.postMessage(message, [
+      channel.port2,
+      ...transferrables.filter(Boolean),
+    ])
   })
 }
 
-async function respondWithMock(response) {
+async function serializeRequest(request) {
+  return {
+    url: request.url,
+    mode: request.mode,
+    method: request.method,
+    headers: Object.fromEntries(request.headers.entries()),
+    cache: request.cache,
+    credentials: request.credentials,
+    destination: request.destination,
+    integrity: request.integrity,
+    redirect: request.redirect,
+    referrer: request.referrer,
+    referrerPolicy: request.referrerPolicy,
+    body: await request.arrayBuffer(),
+    keepalive: request.keepalive,
+  }
+}
+
+function respondWithMock(response) {
   if (response.status === 0) {
     return Response.error()
   }

@@ -14,10 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { formGroupsDefiner } from '@antdvr/library-3.x'
-import { formRulesDefiner } from '@antdvr/library-3.x'
-import { formGridDefiner } from '@antdvr/library-3.x'
-
 export interface Props {
   disabled: boolean;
   readonly: boolean;
@@ -26,7 +22,7 @@ export interface Props {
 
 defineOptions({
   name: 'RoleForm',
-  inheritAttrs: false
+  inheritAttrs: false,
 })
 
 const form = ref(null as InstanceType<SForm> | null)
@@ -40,7 +36,7 @@ const groups = formGroupsDefiner([
     type: 'AGroup',
     slot: '',
     field: 'AGroup-1',
-    label: ''
+    label: '',
   },
   {
     type: 'AInputTextarea',
@@ -50,8 +46,8 @@ const groups = formGroupsDefiner([
     props: {
       rows: 1,
       autoSize: true,
-      placeholder: '请输入角色名称'
-    }
+      placeholder: '请输入角色名称',
+    },
   },
   {
     type: 'ASelect',
@@ -63,25 +59,25 @@ const groups = formGroupsDefiner([
       options: [
         {
           label: '用户级',
-          value: '0'
+          value: '0',
         },
         {
           label: '部门级',
-          value: '1'
+          value: '1',
         },
         {
           label: '公司级',
-          value: '2'
-        }
-      ]
-    }
+          value: '2',
+        },
+      ],
+    },
   },
   {
     type: 'AGroup',
     slot: 'AGroup-2',
     field: 'AGroup-2',
     label: '状态信息',
-    border: true
+    border: true,
   },
   {
     type: 'ASwitch',
@@ -92,19 +88,19 @@ const groups = formGroupsDefiner([
       checkedValue: 'Y',
       unCheckedValue: 'N',
       checkedChildren: '开',
-      unCheckedChildren: '关'
-    }
-  }
+      unCheckedChildren: '关',
+    },
+  },
 ])
 
 const rules = formRulesDefiner({
   roleName: [{ required: true, message: '请输入角色名称' }],
-  dataFlag: [{ required: true, message: '请选择数据范围' }]
+  dataFlag: [{ required: true, message: '请选择数据范围' }],
 })
 
 const grid = formGridDefiner({
   gutter: 8,
-  xs: 24
+  xs: 24,
 })
 
 const resetFields = (...rest: any[]) => {
@@ -114,7 +110,7 @@ const resetFields = (...rest: any[]) => {
 const validateFields = (...rest: any[]) => {
   return form.value?.validateFields(...rest).then(() => ({
     action: action.value,
-    record: model.value
+    record: model.value,
   }))
 }
 
@@ -132,14 +128,14 @@ defineExpose({
   validateFields,
   resetFields,
   doCreate,
-  doClose
+  doClose,
 })
 </script>
 
 <style lang="less" scoped>
 :deep(.s-form-container) {
   .ant-form.ant-form-horizontal {
-    .ant-form-item > .ant-form-item-label {
+    .ant-form-item .ant-form-item-label {
       width: 80px;
       margin-right: 5px;
     }

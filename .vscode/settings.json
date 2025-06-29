@@ -37,6 +37,7 @@
   "editor.formatOnPaste": true,
   "editor.detectIndentation": false,
   "editor.renderControlCharacters": true,
+  "eslint.useFlatConfig": true,
   "eslint.format.enable": true,
   "eslint.probe": [
     "javascript",
@@ -59,14 +60,5 @@
   "prettier.htmlWhitespaceSensitivity": "ignore",
   "prettier.quoteProps": "consistent",
   "prettier.arrowParens": "avoid",
-  "prettier.trailingComma": "es5",
-  "volar.completion.preferredAttrNameCase": "camel",
-  "volar.completion.preferredTagNameCase": "kebab",
-  "volar.codeLens.references": false,
-  "volar.icon.splitEditors": false,
-  "stylusSupremacy.insertColons": true,
-  "stylusSupremacy.insertBraces": false,
-  "stylusSupremacy.insertSemicolons": false,
-  "stylusSupremacy.insertNewLineAroundImports": false,
-  "stylusSupremacy.insertNewLineAroundBlocks": false
+  "prettier.trailingComma": "es5"
 }

@@ -24,9 +24,9 @@ worker.use(
               isOrg: 'Y',
               isLeaf: false,
               title: '杰耘投资集团有限公司',
-              orgShortName: '杰耘集团'
-            }
-          ]
+              orgShortName: '杰耘集团',
+            },
+          ],
         }
         break
       }
@@ -40,9 +40,9 @@ worker.use(
               isOrg: 'Y',
               isLeaf: false,
               title: '杰耘投资发展有限公司',
-              orgShortName: '杰耘母公司'
-            }
-          ]
+              orgShortName: '杰耘母公司',
+            },
+          ],
         }
         break
       }
@@ -56,16 +56,16 @@ worker.use(
               isOrg: 'Y',
               isLeaf: true,
               title: '杰耘网盾平台',
-              orgShortName: '杰耘网盾'
+              orgShortName: '杰耘网盾',
             },
             {
               key: '101.100.138',
               isOrg: 'Y',
               isLeaf: true,
               title: '杰耘采购平台',
-              orgShortName: '杰耘采购'
-            }
-          ]
+              orgShortName: '杰耘采购',
+            },
+          ],
         }
         break
       }
@@ -73,7 +73,7 @@ worker.use(
         resource = {
           code: '0000',
           message: null,
-          result: []
+          result: [],
         }
       }
     }
@@ -87,7 +87,7 @@ worker.use(
 
     return promiser(
       HttpResponse.json(resource),
-      0
+      0,
     )
-  })
+  }),
 )

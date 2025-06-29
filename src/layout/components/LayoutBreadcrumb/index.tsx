@@ -1,5 +1,3 @@
-import 'ant-design-vue/es/breadcrumb/style/index.less'
-
 import ABreadcrumb, { BreadcrumbItem as ABreadcrumbItem } from 'ant-design-vue/es/breadcrumb'
 import { HomeOutlined } from '@ant-design/icons-vue'
 import * as VueTypes from 'vue-types'
@@ -9,7 +7,7 @@ export default defineComponent({
   props: {
     multiTab: VueTypes.bool().def(false),
     isMixMenu: VueTypes.bool().def(false),
-    hideMixHeaderTab: VueTypes.bool().def(true)
+    hideMixHeaderTab: VueTypes.bool().def(true),
   },
   setup(props) {
     const route = useRoute()
@@ -26,8 +24,8 @@ export default defineComponent({
 
       return (
         <div
-          class='layout-breadcrumb'
-          style='height: 38px;'
+          class="layout-breadcrumb"
+          style="height: 38px;"
         >
           <div
             style={{
@@ -37,14 +35,14 @@ export default defineComponent({
               backgroundColor: '#ffffff',
               boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.15)',
               position: 'relative',
-              zIndex: 9
+              zIndex: 9,
             }}
           >
             <ABreadcrumb>
               {
                 breadcrumbs.value.map((route, index) => (
                   <ABreadcrumbItem>
-                    {index === 0 && <HomeOutlined/>}
+                    {index === 0 && <HomeOutlined />}
                     <span>{route.meta.title}</span>
                   </ABreadcrumbItem>
                 ))
@@ -54,5 +52,5 @@ export default defineComponent({
         </div>
       )
     }
-  }
+  },
 })
