@@ -34,7 +34,7 @@ export default tseslint.config(
     extends: [
       ...flatArray(eslint.configs.recommended),
       ...flatArray(tseslint.configs.recommended),
-      ...flatArray(stylistic.configs['recommended-flat']),
+      ...flatArray(stylistic.configs['recommended']),
       ...flatArray(pluginVue.configs['flat/recommended']),
       ...flatArray(antdvr.configs['flat/recommended']),
     ],
