@@ -97,10 +97,10 @@ const cardBodyStyle: CSSProperties = {
   position: 'relative',
 }
 
-const tree = ref(null as InstanceType<typeof OrganizeTree> | null)
-const table = ref(null as InstanceType<typeof OrganizeTable> | null)
-const query = ref(null as InstanceType<typeof OrganizeQuery> | null)
-const drawer = ref(null as InstanceType<typeof OrganizeDrawer> | null)
+const tree = useTemplateRef<InstanceType<typeof OrganizeTree>>('tree')
+const table = useTemplateRef<InstanceType<typeof OrganizeTable>>('table')
+const query = useTemplateRef<InstanceType<typeof OrganizeQuery>>('query')
+const drawer = useTemplateRef<InstanceType<typeof OrganizeDrawer>>('drawer')
 const selecter = ref(null as Record<string, any> | null)
 const collapse = ref(false as boolean)
 const appStore = useAppStore()

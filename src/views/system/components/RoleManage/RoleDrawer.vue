@@ -55,7 +55,7 @@ defineOptions({
 })
 
 const emits = defineEmits<Emits>()
-const form = ref(null as InstanceType<typeof RoleForm> | null)
+const form = useTemplateRef<InstanceType<typeof RoleForm>>('form')
 
 const title = ref('')
 const action = ref('')

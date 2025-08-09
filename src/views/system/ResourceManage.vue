@@ -45,7 +45,7 @@ defineOptions({
 })
 
 const menuNode = ref({} as Record<string, any>)
-const refTable = ref(null as InstanceType<typeof ButtonTable> | InstanceType<typeof MenuTable> | null)
+const refTable = useTemplateRef<InstanceType<typeof ButtonTable> | InstanceType<typeof MenuTable>>('refTable')
 const collapse = ref(false as boolean)
 const appStore = useAppStore()
 

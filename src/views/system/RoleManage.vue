@@ -64,9 +64,9 @@ const cardBodyStyle: CSSProperties = {
   position: 'relative',
 }
 
-const table = ref(null as InstanceType<typeof RoleTable> | null)
-const query = ref(null as InstanceType<typeof RoleQuery> | null)
-const drawer = ref(null as InstanceType<typeof RoleDrawer> | null)
+const table = useTemplateRef<InstanceType<typeof RoleTable>>('table')
+const query = useTemplateRef<InstanceType<typeof RoleQuery>>('query')
+const drawer = useTemplateRef<InstanceType<typeof RoleDrawer>>('drawer')
 const appStore = useAppStore()
 
 const doTableRefresh = (params = {}) => {

@@ -101,8 +101,8 @@ defineOptions({
 })
 
 const props = defineProps<Props>()
-const table = ref(null as InstanceType<STable> | null)
-const buttonDrawer = ref(null as InstanceType<typeof ButtonDrawer> | null)
+const table = useTemplateRef<InstanceType<STable>>('table')
+const buttonDrawer = useTemplateRef<InstanceType<typeof ButtonDrawer>>('buttonDrawer')
 
 const queryParams = ref({
   resourceType: 'b',

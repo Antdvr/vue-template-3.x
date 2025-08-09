@@ -76,7 +76,7 @@ defineOptions({
 
 const emits = defineEmits<Emits>()
 const props = defineProps<Props>()
-const form = ref(null as InstanceType<typeof OrganizeForm> | null)
+const form = useTemplateRef<InstanceType<typeof OrganizeForm>>('form')
 
 const title = ref('')
 const action = ref('')

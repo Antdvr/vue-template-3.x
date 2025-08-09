@@ -74,9 +74,9 @@ const cardBodyStyle: CSSProperties = {
   position: 'relative',
 }
 
-const table = ref(null as InstanceType<typeof UserTable> | null)
-const query = ref(null as InstanceType<typeof UserQuery> | null)
-const drawer = ref(null as InstanceType<typeof UserDrawer> | null)
+const table = useTemplateRef<InstanceType<typeof UserTable>>('table')
+const query = useTemplateRef<InstanceType<typeof UserQuery>>('query')
+const drawer = useTemplateRef<InstanceType<typeof UserDrawer>>('drawer')
 const appStore = useAppStore()
 
 const doTableRefresh = (params = {}) => {

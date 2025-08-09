@@ -110,8 +110,8 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const table = ref(null as InstanceType<STable> | null)
-const menuDrawer = ref(null as InstanceType<typeof MenuDrawer> | null)
+const table = useTemplateRef<InstanceType<STable>>('table')
+const menuDrawer = useTemplateRef<InstanceType<typeof MenuDrawer>>('menuDrawer')
 
 const queryParams = ref({
   resourceType: 'm',

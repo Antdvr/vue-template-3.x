@@ -25,7 +25,7 @@ export default defineComponent({
     const siderWidth = ref(192)
     const headerHeight = ref(48)
     const collapsedWidth = ref(48)
-    const refLayoutHeader = ref(null as HTMLElement | null)
+    const refLayoutHeader = useTemplateRef<HTMLElement>('refLayoutHeader')
 
     const intersectionObserver = new window.IntersectionObserver(entries => {
       if (entries[0].intersectionRatio <= 0.5) {
@@ -91,7 +91,7 @@ export default defineComponent({
             iconfontUrl={appStore.iconfontUrl}
           >
             <div
-              ref={refLayoutHeader as any}
+              ref="refLayoutHeader"
               style="display: flex; flex: 1 1 auto; align-items: center; height: 48px; lineHeight: 48px;"
             >
               <h1

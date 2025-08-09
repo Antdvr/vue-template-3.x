@@ -74,7 +74,11 @@ export default defineComponent({
     }
 
     const APasswordModal = () => {
-      const formRef = ref<any>()
+      if (!open.value) {
+        return <Fragment />
+      }
+
+      const formRef = useTemplateRef<any>('formRef')
 
       const formModel = reactive({
         password: '',
@@ -158,7 +162,7 @@ export default defineComponent({
             window.location.reload()
           })
         } catch (err: any) {
-          AMessage.error(err.message)
+          AMessage.error(err.message || '表单校验失败')
         }
       }
 
@@ -171,7 +175,7 @@ export default defineComponent({
           v-model={[open.value, 'open']}
         >
           <AForm
-            ref={formRef}
+            ref="formRef"
             model={formModel}
             rules={formRules}
             hideRequiredMark

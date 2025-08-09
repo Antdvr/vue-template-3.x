@@ -32,7 +32,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const form = ref(null as InstanceType<SForm> | null)
+const form = useTemplateRef<InstanceType<SForm>>('form')
 const props = withDefaults(defineProps<Props>(), {})
 const spinning = computed(() => props.loading)
 const model: Ref<any> = ref({})

@@ -74,7 +74,7 @@ defineOptions({
 
 const props = defineProps<Props>()
 const emits = defineEmits<Emits>()
-const table = ref(null as InstanceType<STable> | null)
+const table = useTemplateRef<InstanceType<STable>>('table')
 const queryParams = ref({ title: '', orgId: '', deptId: '', activity: '' })
 
 const sticky = tableStickyDefiner({

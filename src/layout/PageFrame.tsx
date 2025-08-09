@@ -10,8 +10,8 @@ export default defineComponent({
     const route = useRoute()
     const appStore = useAppStore()
     const iframeSource = extractLink(route as any)
+    const iframe = useTemplateRef<HTMLIFrameElement>('iframe')
     const loading = ref<boolean>(true)
-    const iframe = ref<any>(null)
 
     onMounted(() => {
       if (iframe.value) {
@@ -38,7 +38,7 @@ export default defineComponent({
           spinning={loading.value}
         >
           <iframe
-            ref={iframe as any}
+            ref="iframe"
             width="100%"
             height="100%"
             scrolling="yes"

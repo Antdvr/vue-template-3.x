@@ -182,7 +182,7 @@ const loadings = ref({
 })
 
 // 菜单资源
-const tree = ref(null as InstanceType<STree> | null)
+const tree = useTemplateRef<InstanceType<STree>>('tree')
 const menuTrees = ref([] as Array<{ label: string; value: string; children: any[]; }>)
 const menuCheckKeys = ref([] as Array<string>)
 const fieldNames = {

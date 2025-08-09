@@ -96,7 +96,7 @@ const headStyle: CSSProperties = {
 }
 
 const emits = defineEmits<Emits>()
-const tree = ref(null as InstanceType<STree> | null)
+const tree = useTemplateRef<InstanceType<STree>>('tree')
 const treeData = ref([] as any)
 const loading = ref(false as boolean)
 const loadedKeys = ref([] as STreeKeys)

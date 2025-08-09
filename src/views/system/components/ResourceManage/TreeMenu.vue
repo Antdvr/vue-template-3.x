@@ -170,8 +170,8 @@ const fieldNames: Ref<STreeFieldNames> = ref({
 })
 
 const emits = defineEmits<Emits>()
-const tree = ref(null as InstanceType<STree> | null)
-const menuDrawer = ref(null as InstanceType<typeof MenuDrawer> | null)
+const tree = useTemplateRef<InstanceType<STree>>('tree')
+const menuDrawer = useTemplateRef<InstanceType<typeof MenuDrawer>>('menuDrawer')
 const menuTree = ref([] as Record<string, any>[])
 const loading = ref(false)
 
