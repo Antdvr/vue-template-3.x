@@ -22,7 +22,7 @@ const whiteRouteList = ['/auth/Login']
 /**
  * 路由处理
  */
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async(to, from) => {
   NProgress.start()
 
   const userStore = useUserStore()
@@ -33,8 +33,7 @@ router.beforeEach(async(to, from, next) => {
 
   if (token) {
     if (to.path === loginRoutePath) {
-      next({ path: isNonEmptyString(to.query.redirect) && to.query.redirect || indexRoutePath })
-      return
+      return { path: isNonEmptyString(to.query.redirect) && to.query.redirect || indexRoutePath }
     }
 
     if (!logined) {
@@ -52,9 +51,9 @@ router.beforeEach(async(to, from, next) => {
           router.addRoute(route as any)
         }
 
-        to.path === pathRedirect
-          ? next({ ...to, replace: true })
-          : next({ path: pathRedirect })
+        return to.path === pathRedirect
+          ? { ...to, replace: true }
+          : { path: pathRedirect }
       } catch {
         await new Promise(resolve => {
           Notification.error({
@@ -65,23 +64,22 @@ router.beforeEach(async(to, from, next) => {
           })
         })
 
-        next({
+        return {
           path: loginRoutePath,
           query: { redirect: to.fullPath },
-        })
+        }
       }
-      return
     }
 
-    return next()
+    return
   }
 
   if (!to || !to.name) {
-    return next({ path: loginRoutePath })
+    return { path: loginRoutePath }
   }
 
   if (whiteRouteList.includes(to.path)) {
-    return next()
+    return
   }
 
   await new Promise(resolve => {
@@ -93,10 +91,10 @@ router.beforeEach(async(to, from, next) => {
     })
   })
 
-  next({
+  return {
     path: loginRoutePath,
     query: { redirect: to.fullPath },
-  })
+  }
 })
 
 /**
